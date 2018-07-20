@@ -10,7 +10,7 @@
             margin: 0;
         }
         .dark{
-            background: black;
+            background: #222;
             font-family: Consolas,Menlo,Courier,monospace;
             font-size: 12px;
             margin: 0;
@@ -27,14 +27,14 @@
         "30": "black",
         "31": "red",
         "32": "green",
-        "33": "yellow",
-        "34": "blue",
+        "33": "#FFFF91", // yellow
+        "34": "#96CBFE", // blue
         "35": "purple",
         "36": "cyan",
-        "37": "white",
+        "37": "#f1f1f1", // white
 
         // bg color
-        "40": "black",
+        "40": "#4E4E4E", // black
         "41": "red",
         "42": "green",
         "43": "yellow",
@@ -53,17 +53,20 @@
         for(var i=0;i<line.length;i++){
             var span = document.createElement("span")
             var item = line[i];
+            if (item["bold"]) {
+                span.style.fontWeight = "bolder"
+            }
             if (item["color"] !== ""){
                 span.style.color = item["color"]
             }
             if (item["bg_color"] !== "") {
                 span.style.backgroundColor = item["bg_color"]
             }
-            if (span.style.color === "black" && dark) {
-                span.style.color = "white"
+            if (span.style.color === "black" && dark && span.style.backgroundColor === "") {
+                span.style.color = "#f1f1f1" // white
             }
 
-            if (span.style.backgroundColor === "black" && dark) {
+            if (span.style.backgroundColor === "black" && dark && span.style.color === "black") {
                 span.style.backgroundColor = "white"
             }
             span.innerHTML = item["text"]
@@ -77,7 +80,7 @@
     $(document).ready(function (e) {
         let dark = $("#xlog").hasClass("dark");
         let lines = [];
-        let item = {"text": "","color":"black","bg_color":""};
+        let item = {"text": "","color":"black","bg_color":"","bold":false};
         let line = [];
 
         function newline(dark){
@@ -91,7 +94,7 @@
         function pushItemToLine() {
             if (item["text"] !== "") {
                 line.push(item)
-                item = {"text": "","color":"black","bg_color":""}
+                item = {"text": "","color":"black","bg_color":"","bold":false}
             }
         }
 
@@ -106,27 +109,36 @@
         }
 
         let lexer = (new Lexer).addRule(/\033\[([\d]+)m/, function (e, f) {
-            if (f > "30" && f < "37") {
+            pushItemToLine()
+
+            if (f >= "30" && f <= "37") {
                 item["color"] = color[f]
-            }else if (f > "40" && f < "47") {
-                item["bg_color"] = f
+            }else if (f >= "40" && f <= "47") {
+                item["bg_color"] = color[f]
+            }else if (f === "1") {
+                item["bold"] = true
             }
 
-            pushItemToLine()
+
         }).addRule(/\033\[(\d+);(\d+)m/, function (e, f, g) {
-            if (f > "30" && f < "37") {
-                item["color"] = color[f]
-            }else if (f > "40" && f < "47") {
-                item["bg_color"] = f
-            }
-
-            if (g > "30" && g < "37") {
-                item["color"] = color[g]
-            }else if (g > "40" && g < "47") {
-                item["bg_color"] = g
-            }
-
             pushItemToLine()
+
+            if (f >= "30" && f <= "37") {
+                item["color"] = color[f]
+            }else if (f >= "40" && f <= "47") {
+                item["bg_color"] = color[f]
+            }else if (f === "1") {
+                item["bold"] = true
+            }
+
+            if (g >= "30" && g <= "37") {
+                item["color"] = color[g]
+            }else if (g >= "40" && g <= "47") {
+                item["bg_color"] = color[g]
+            }else if (g === "1") {
+                item["bold"] = true
+            }
+
         }).addRule(/\033\[0K/, function (e) {
         }).addRule(/\033\[K/, function (e) {
         }).addRule(/[\r]?\n/, function (e) {
