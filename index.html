@@ -6,10 +6,14 @@
     <script src="./jquery.min.js"></script>
     <script src="./lexer.js"></script>
     <style>
+        body{
+            margin: 0;
+        }
         .dark{
             background: black;
             font-family: Consolas,Menlo,Courier,monospace;
             font-size: 12px;
+            margin: 0;
         }
     </style>
 </head>
@@ -140,10 +144,16 @@
             method: "GET",
             url: "https://api.travis-ci.org/v3/job/387134441/log.txt",
             success: function (data) {
-                // console.log(data);
-                // console.log(data.charAt(29),data.charCodeAt(29))
-                lexer.setInput(data).lex()
-                // console.log(items)
+                let segs = data.split("\n");
+                segs.forEach((v, i) => {
+                    setTimeout(() => {
+                        let substr = v;
+                        if (segs.length !== i + 1) {
+                            substr = substr + "\n"
+                        }
+                        lexer.setInput(substr).lex()
+                    }, 0)
+                })
             }
         })
     });
