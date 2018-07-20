@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./jquery.min.js"></script>
+    <script src="./lexer.js"></script>
+    <style>
+        .dark{
+            background: black;
+            font-family: Consolas,Menlo,Courier,monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<pre id="xlog" class="dark">
+</pre>
+</body>
+<script>
+    color = {
+        // color
+        "30": "black",
+        "31": "red",
+        "32": "green",
+        "33": "yellow",
+        "34": "blue",
+        "35": "purple",
+        "36": "cyan",
+        "37": "white",
+
+        // bg color
+        "40": "black",
+        "41": "red",
+        "42": "green",
+        "43": "yellow",
+        "44": "blue",
+        "45": "purple",
+        "46": "cyan",
+        "47": "white"
+    }
+
+    var xlog = document.getElementById("xlog")
+
+    function writeLine(line, dark){
+        var element = document.createElement("div")
+        element.className = "line"
+
+        for(var i=0;i<line.length;i++){
+            var span = document.createElement("span")
+            var item = line[i];
+            if (item["color"] !== ""){
+                span.style.color = item["color"]
+            }
+            if (item["bg_color"] !== "") {
+                span.style.backgroundColor = item["bg_color"]
+            }
+            if (span.style.color === "black" && dark) {
+                span.style.color = "white"
+            }
+
+            if (span.style.backgroundColor === "black" && dark) {
+                span.style.backgroundColor = "white"
+            }
+            span.innerHTML = item["text"]
+
+            element.appendChild(span)
+        }
+
+        xlog.appendChild(element)
+    }
+
+    $(document).ready(function (e) {
+        let dark = $("#xlog").hasClass("dark");
+        let lines = [];
+        let item = {"text": "","color":"black","bg_color":""};
+        let line = [];
+
+        function newline(dark){
+            if (line.length > 0){
+                lines.push(line)
+                writeLine(line, dark)
+                line = []
+            }
+        }
+
+        function pushItemToLine() {
+            if (item["text"] !== "") {
+                line.push(item)
+                item = {"text": "","color":"black","bg_color":""}
+            }
+        }
+
+        function eraseLine(pItem){
+            const SPLIT = "\r"
+            let segs = pItem["text"].split(SPLIT)
+            if (segs.length > 1) {
+                segs.pop()
+                segs.pop()
+            }
+            pItem["text"] = segs.join(SPLIT)
+        }
+
+        let lexer = (new Lexer).addRule(/\033\[([\d]+)m/, function (e, f) {
+            if (f > "30" && f < "37") {
+                item["color"] = color[f]
+            }else if (f > "40" && f < "47") {
+                item["bg_color"] = f
+            }
+
+            pushItemToLine()
+        }).addRule(/\033\[(\d+);(\d+)m/, function (e, f, g) {
+            if (f > "30" && f < "37") {
+                item["color"] = color[f]
+            }else if (f > "40" && f < "47") {
+                item["bg_color"] = f
+            }
+
+            if (g > "30" && g < "37") {
+                item["color"] = color[g]
+            }else if (g > "40" && g < "47") {
+                item["bg_color"] = g
+            }
+
+            pushItemToLine()
+        }).addRule(/\033\[0K/, function (e) {
+        }).addRule(/\033\[K/, function (e) {
+        }).addRule(/[\r]?\n/, function (e) {
+            item["text"] += e
+            pushItemToLine()
+            newline(dark)
+        }).addRule(/\r/, function (e) {
+            item["text"] += e
+            eraseLine(item)
+        }).addRule(/./, function (e) {
+            item["text"] += e
+        });
+
+        $.ajax({
+            method: "GET",
+            url: "https://api.travis-ci.org/v3/job/387134441/log.txt",
+            success: function (data) {
+                // console.log(data);
+                // console.log(data.charAt(29),data.charCodeAt(29))
+                lexer.setInput(data).lex()
+                // console.log(items)
+            }
+        })
+    });
+</script>
+</html>

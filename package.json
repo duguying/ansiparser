@@ -1,0 +1,26 @@
+{
+  "name": "ansiparser",
+  "version": "1.0.1",
+  "description": "A packaged to calculate chain of directed-graph",
+  "main": "src/wrapper.ts",
+  "auth": "duguying",
+  "email": "root@duguying.net",
+  "dependencies": {
+    "ansicolor": "^1.1.72",
+    "jquery": "^3.3.1",
+    "lex": "^1.7.9"
+  },
+  "devDependencies": {
+    "@types/mocha": "^5.2.0",
+    "@types/node": "^10.1.2",
+    "mocha": "^5.2.0",
+    "ts-loader": "^4.3.0",
+    "ts-node": "^6.0.5",
+    "typescript": "^2.8.3",
+    "typings": "^2.1.1"
+  },
+  "scripts": {
+    "test": "mocha -r ts-node/register **/*.spec.ts",
+    "build": "./node_modules/.bin/webpack-cli"
+  }
+}
