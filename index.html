@@ -5,6 +5,7 @@
     <title>Title</title>
     <script src="./jquery.min.js"></script>
     <script src="./lexer.js"></script>
+    <script src="./XLog.js"></script>
     <style>
         body{
             margin: 0;
@@ -18,140 +19,14 @@
     </style>
 </head>
 <body>
-<pre id="xlog" class="dark">
+<pre id="xlog" class="">
 </pre>
 </body>
 <script>
-    color = {
-        // color
-        "30": "black",
-        "31": "red",
-        "32": "green",
-        "33": "#FFFF91", // yellow
-        "34": "#96CBFE", // blue
-        "35": "purple",
-        "36": "cyan",
-        "37": "#f1f1f1", // white
-
-        // bg color
-        "40": "#4E4E4E", // black
-        "41": "red",
-        "42": "green",
-        "43": "yellow",
-        "44": "blue",
-        "45": "purple",
-        "46": "cyan",
-        "47": "white"
-    }
-
-    var xlog = document.getElementById("xlog")
-
-    function writeLine(line, dark){
-        var element = document.createElement("div")
-        element.className = "line"
-
-        for(var i=0;i<line.length;i++){
-            var span = document.createElement("span")
-            var item = line[i];
-            if (item["bold"]) {
-                span.style.fontWeight = "bolder"
-            }
-            if (item["color"] !== ""){
-                span.style.color = item["color"]
-            }
-            if (item["bg_color"] !== "") {
-                span.style.backgroundColor = item["bg_color"]
-            }
-            if (span.style.color === "black" && dark && span.style.backgroundColor === "") {
-                span.style.color = "#f1f1f1" // white
-            }
-
-            if (span.style.backgroundColor === "black" && dark && span.style.color === "black") {
-                span.style.backgroundColor = "white"
-            }
-            span.innerHTML = item["text"]
-
-            element.appendChild(span)
-        }
-
-        xlog.appendChild(element)
-    }
+    var container = document.getElementById("xlog")
+    var lexer = new XLog(container)
 
     $(document).ready(function (e) {
-        let dark = $("#xlog").hasClass("dark");
-        let lines = [];
-        let item = {"text": "","color":"black","bg_color":"","bold":false};
-        let line = [];
-
-        function newline(dark){
-            if (line.length > 0){
-                lines.push(line)
-                writeLine(line, dark)
-                line = []
-            }
-        }
-
-        function pushItemToLine() {
-            if (item["text"] !== "") {
-                line.push(item)
-                item = {"text": "","color":"black","bg_color":"","bold":false}
-            }
-        }
-
-        function eraseLine(pItem){
-            const SPLIT = "\r"
-            let segs = pItem["text"].split(SPLIT)
-            if (segs.length > 1) {
-                segs.pop()
-                segs.pop()
-            }
-            pItem["text"] = segs.join(SPLIT)
-        }
-
-        let lexer = (new Lexer).addRule(/\033\[([\d]+)m/, function (e, f) {
-            pushItemToLine()
-
-            if (f >= "30" && f <= "37") {
-                item["color"] = color[f]
-            }else if (f >= "40" && f <= "47") {
-                item["bg_color"] = color[f]
-            }else if (f === "1") {
-                item["bold"] = true
-            }
-
-
-        }).addRule(/\033\[(\d+);(\d+)m/, function (e, f, g) {
-            pushItemToLine()
-
-            if (f >= "30" && f <= "37") {
-                item["color"] = color[f]
-            }else if (f >= "40" && f <= "47") {
-                item["bg_color"] = color[f]
-            }else if (f === "1") {
-                item["bold"] = true
-            }
-
-            if (g >= "30" && g <= "37") {
-                item["color"] = color[g]
-            }else if (g >= "40" && g <= "47") {
-                item["bg_color"] = color[g]
-            }else if (g === "1") {
-                item["bold"] = true
-            }
-
-        }).addRule(/\033\[0K/, function (e) {
-        }).addRule(/\033\[K/, function (e) {
-        }).addRule(/[\r]?\n/, function (e) {
-            item["text"] += e
-            pushItemToLine()
-            newline(dark)
-        }).addRule(/\r/, function (e) {
-            item["text"] += e
-            eraseLine(item)
-        }).addRule(/./, function (e) {
-            item["text"] += e
-        });
-
         $.ajax({
             method: "GET",
             url: "https://api.travis-ci.org/v3/job/387134441/log.txt",
@@ -163,7 +38,7 @@
                         if (segs.length !== i + 1) {
                             substr = substr + "\n"
                         }
-                        lexer.setInput(substr).lex()
+                        lexer.write(substr)
                     }, 0)
                 })
             }
