@@ -14,7 +14,6 @@ declare class Lexer {
 class XLog {
     private lexer = null;
     private xLogElement: HTMLElement = null;
-    private dark: boolean = true;
     private lines = [];
     private item = {"text": "", "color": "", "bg_color": "", "bold": false};
     private line = [];
@@ -40,10 +39,10 @@ class XLog {
         "47": "white"
     }
 
-    private newline(dark) {
+    private newline() {
         if (this.line.length > 0) {
             this.lines.push(this.line)
-            this.writeLine(this.line, dark)
+            this.writeLine(this.line)
             this.line = []
         }
     }
@@ -65,7 +64,7 @@ class XLog {
         pItem["text"] = segs.join(SPLIT)
     }
 
-    private writeLine(line, dark) {
+    private writeLine(line) {
         let element = document.createElement("div")
         element.className = "line"
 
@@ -74,27 +73,14 @@ class XLog {
             let item = line[i];
             if (item["bold"]) {
                 span.classList.add("bolder")
-                // span.style.fontWeight = "bolder"
             }
             if (item["color"] !== "") {
                 span.classList.add("fg-"+item["color"])
-                // span.style.color = item["color"]
             }
             if (item["bg_color"] !== "") {
                 span.classList.add("bg-"+item["bg_color"])
-                // span.style.backgroundColor = item["bg_color"]
             }
-            // if (span.style.color === "black" && dark && span.style.backgroundColor === "") {
-            //     span.classList.add("fg-white")
-                // span.style.color = "#f1f1f1" // white
-            // }
-
-            // if (span.style.backgroundColor === "black" && dark && span.style.color === "black") {
-            //     span.classList.add("bg-white")
-                // span.style.backgroundColor = "white"
-            // }
             span.innerHTML = item["text"]
-
             element.appendChild(span)
         }
 
@@ -140,7 +126,7 @@ class XLog {
         }).addRule(/[\r]?\n/, function (e) {
             _this.item["text"] += e
             _this.pushItemToLine()
-            _this.newline(_this.dark)
+            _this.newline()
         }).addRule(/\r/, function (e) {
             _this.item["text"] += e
             _this.eraseLine(_this.item)
@@ -154,14 +140,6 @@ class XLog {
     public constructor(xlog: HTMLElement) {
         // get attributes
         this.xLogElement = xlog
-        this.dark = false
-        let xLogClassList = this.xLogElement.classList
-        for (let i = 0; i < xLogClassList.length; i++) {
-            let clz = xLogClassList[i];
-            if (clz === "dark") {
-                this.dark = true
-            }
-        }
 
         // generate lexer
         this.createLexer()
