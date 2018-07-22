@@ -16,21 +16,21 @@ class XLog {
     private xLogElement: HTMLElement = null;
     private dark: boolean = true;
     private lines = [];
-    private item = {"text": "", "color": "black", "bg_color": "", "bold": false};
+    private item = {"text": "", "color": "", "bg_color": "", "bold": false};
     private line = [];
     private color = {
         // color
         "30": "black",
         "31": "red",
         "32": "green",
-        "33": "#FFFF91", // yellow
-        "34": "#96CBFE", // blue
+        "33": "yellow",
+        "34": "blue",
         "35": "purple",
         "36": "cyan",
-        "37": "#f1f1f1", // white
+        "37": "white",
 
         // bg color
-        "40": "#4E4E4E", // black
+        "40": "black",
         "41": "red",
         "42": "green",
         "43": "yellow",
@@ -51,7 +51,7 @@ class XLog {
     private pushItemToLine() {
         if (this.item["text"] !== "") {
             this.line.push(this.item)
-            this.item = {"text": "", "color": "black", "bg_color": "", "bold": false}
+            this.item = {"text": "", "color": "", "bg_color": "", "bold": false}
         }
     }
 
@@ -73,21 +73,26 @@ class XLog {
             let span = document.createElement("span")
             let item = line[i];
             if (item["bold"]) {
-                span.style.fontWeight = "bolder"
+                span.classList.add("bolder")
+                // span.style.fontWeight = "bolder"
             }
             if (item["color"] !== "") {
-                span.style.color = item["color"]
+                span.classList.add("fg-"+item["color"])
+                // span.style.color = item["color"]
             }
             if (item["bg_color"] !== "") {
-                span.style.backgroundColor = item["bg_color"]
+                span.classList.add("bg-"+item["bg_color"])
+                // span.style.backgroundColor = item["bg_color"]
             }
-            if (span.style.color === "black" && dark && span.style.backgroundColor === "") {
-                span.style.color = "#f1f1f1" // white
-            }
+            // if (span.style.color === "black" && dark && span.style.backgroundColor === "") {
+            //     span.classList.add("fg-white")
+                // span.style.color = "#f1f1f1" // white
+            // }
 
-            if (span.style.backgroundColor === "black" && dark && span.style.color === "black") {
-                span.style.backgroundColor = "white"
-            }
+            // if (span.style.backgroundColor === "black" && dark && span.style.color === "black") {
+            //     span.classList.add("bg-white")
+                // span.style.backgroundColor = "white"
+            // }
             span.innerHTML = item["text"]
 
             element.appendChild(span)
