@@ -7,10 +7,6 @@
  * Created by duguying on 2018/7/21.
  */
 
-declare class Lexer {
-    addRule(RegExp, any)
-}
-
 class XLog {
     private lexer = null;
     private xLogElement: HTMLElement = null;
@@ -88,7 +84,7 @@ class XLog {
     }
 
     private createLexer() {
-        let lexer = new Lexer()
+        let lexer = new Lexer(null);
         let _this = this
         lexer.addRule(/\033\[([\d]+)m/, function (e, f) {
             _this.pushItemToLine()
@@ -102,7 +98,7 @@ class XLog {
             }
 
 
-        }).addRule(/\033\[(\d+);(\d+)m/, function (e, f, g) {
+        }, null).addRule(/\033\[(\d+);(\d+)m/, function (e, f, g) {
             _this.pushItemToLine()
 
             if (f >= "30" && f <= "37") {
@@ -121,7 +117,7 @@ class XLog {
                 _this.item["bold"] = true
             }
 
-        }).addRule(/\033\[(\d+);(\d+);(\d+)m/, function (e, f, g, h) {
+        }, null).addRule(/\033\[(\d+);(\d+);(\d+)m/, function (e, f, g, h) {
             _this.pushItemToLine()
 
             if (f >= "30" && f <= "37") {
@@ -148,18 +144,18 @@ class XLog {
                 _this.item["bold"] = true
             }
 
-        }).addRule(/\033\[0K/, function (e) {
-        }).addRule(/\033\[K/, function (e) {
-        }).addRule(/[\r]?\n/, function (e) {
+        }, null).addRule(/\033\[0K/, function (e) {
+        }, null).addRule(/\033\[K/, function (e) {
+        }, null).addRule(/[\r]?\n/, function (e) {
             _this.item["text"] += e
             _this.pushItemToLine()
             _this.newline()
-        }).addRule(/\r/, function (e) {
+        }, null).addRule(/\r/, function (e) {
             _this.item["text"] += e
             _this.eraseLine(_this.item)
-        }).addRule(/./, function (e) {
+        }, null).addRule(/./, function (e) {
             _this.item["text"] += e
-        });
+        }, null);
 
         this.lexer = lexer
     }
