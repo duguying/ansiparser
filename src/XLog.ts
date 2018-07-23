@@ -9,7 +9,7 @@
 
 import Lexer from "./Lexer"
 
-class XLog {
+export default class XLog {
     private lexer = null;
     private xLogElement: HTMLElement = null;
     private lines = [];
@@ -174,15 +174,3 @@ class XLog {
         this.lexer.setInput(input).lex()
     }
 }
-
-interface Window {
-    XLog: any
-}
-
-interface Global {
-    XLog: any
-}
-
-let globalObj:any = typeof window !== 'undefined' ? window : global;
-
-globalObj.XLog = XLog;

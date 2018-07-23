@@ -12,7 +12,7 @@ const path = require('path');
 const version = require("./package.json").version;
 
 module.exports = {
-    entry: './src/XLog.ts',
+    entry: './src/Mount.ts',
     module: {
         rules: [
             {
