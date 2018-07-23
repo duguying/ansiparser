@@ -19,7 +19,7 @@
     $(document).ready(function (e) {
         $.ajax({
             method: "GET",
-            url: "https://api.travis-ci.org/v3/job/387134441/log.txt",
+            url: "https://api.travis-ci.org/v3/job/31095019/log.txt",
             success: function (data) {
                 let segs = data.split("\n");
                 segs.forEach((v, i) => {

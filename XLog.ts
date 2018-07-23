@@ -121,6 +121,33 @@ class XLog {
                 _this.item["bold"] = true
             }
 
+        }).addRule(/\033\[(\d+);(\d+);(\d+)m/, function (e, f, g, h) {
+            _this.pushItemToLine()
+
+            if (f >= "30" && f <= "37") {
+                _this.item["color"] = _this.color[f]
+            } else if (f >= "40" && f <= "47") {
+                _this.item["bg_color"] = _this.color[f]
+            } else if (f === "1") {
+                _this.item["bold"] = true
+            }
+
+            if (g >= "30" && g <= "37") {
+                _this.item["color"] = _this.color[g]
+            } else if (g >= "40" && g <= "47") {
+                _this.item["bg_color"] = _this.color[g]
+            } else if (g === "1") {
+                _this.item["bold"] = true
+            }
+
+            if (h >= "30" && h <= "37") {
+                _this.item["color"] = _this.color[h]
+            } else if (h >= "40" && h <= "47") {
+                _this.item["bg_color"] = _this.color[h]
+            } else if (h === "1") {
+                _this.item["bold"] = true
+            }
+
         }).addRule(/\033\[0K/, function (e) {
         }).addRule(/\033\[K/, function (e) {
         }).addRule(/[\r]?\n/, function (e) {

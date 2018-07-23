@@ -20,10 +20,10 @@ body{
     color: #4E4E4E;
 }
 .dark .fg-red {
-    color: red;
+    color: #FF6C60;
 }
 .dark .fg-green {
-    color: green;
+    color: #0A0;
 }
 .dark .fg-yellow {
     color: #FFFF91;
@@ -32,7 +32,7 @@ body{
     color: #96CBFE;
 }
 .dark .fg-purple {
-    color: purple;
+    color: #FF73FD;
 }
 .dark .fg-cyan {
     color: cyan;
