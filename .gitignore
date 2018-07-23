@@ -1,4 +1,4 @@
 node_modules/
 .idea/
-XLog.js
-Lexer.js
+dist/
+src/*.js

@@ -7,6 +7,8 @@
  * Created by duguying on 2018/7/21.
  */
 
+import Lexer from "./Lexer"
+
 class XLog {
     private lexer = null;
     private xLogElement: HTMLElement = null;
@@ -172,3 +174,15 @@ class XLog {
         this.lexer.setInput(input).lex()
     }
 }
+
+interface Window {
+    XLog: any
+}
+
+interface Global {
+    XLog: any
+}
+
+let globalObj:any = typeof window !== 'undefined' ? window : global;
+
+globalObj.XLog = XLog;

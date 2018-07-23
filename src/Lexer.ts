@@ -7,7 +7,7 @@
  * Created by duguying on 2018/7/23.
  */
 
-class Lexer {
+export default class Lexer {
     private rules = [];
     private remove = 0;
     private state = 0;
