@@ -1,5 +1,5 @@
 {
-  "name": "ansiparser",
+  "name": "xlog-ansiparser",
   "version": "1.0.0",
   "description": "A packaged to parse anis log like xterm",
   "main": "src/xlog.ts",
