@@ -36,7 +36,27 @@ export default class XLog {
         "44": "blue",
         "45": "purple",
         "46": "cyan",
-        "47": "white"
+        "47": "white",
+
+        // bright color
+        "90": "bright-black",
+        "91": "bright-red",
+        "92": "bright-green",
+        "93": "bright-yellow",
+        "94": "bright-blue",
+        "95": "bright-purple",
+        "96": "bright-cyan",
+        "97": "bright-white",
+
+        // bright bg color
+        "100": "bright-black",
+        "101": "bright-red",
+        "102": "bright-green",
+        "103": "bright-yellow",
+        "104": "bright-blue",
+        "105": "bright-purple",
+        "106": "bright-cyan",
+        "107": "bright-white",
     }
 
     private newline() {
@@ -105,29 +125,28 @@ export default class XLog {
         lexer.addRule(/\033\[([\d]+)m/, function (e, f) {
             _this.pushItemToLine()
 
-            if (f >= "30" && f <= "37") {
+            if ((f >= "30" && f <= "37")||f >= "90" && f <= "97") {
                 _this.item["color"] = _this.color[f]
-            } else if (f >= "40" && f <= "47") {
+            } else if ((f >= "40" && f <= "47")||f >= "100" && f <= "107") {
                 _this.item["bg_color"] = _this.color[f]
             } else if (f === "1") {
                 _this.item["bold"] = true
             }
-
 
         }, null).addRule(/\033\[(\d+);(\d+)m/, function (e, f, g) {
             _this.pushItemToLine()
 
-            if (f >= "30" && f <= "37") {
+            if ((f >= "30" && f <= "37")||f >= "90" && f <= "97") {
                 _this.item["color"] = _this.color[f]
-            } else if (f >= "40" && f <= "47") {
+            } else if ((f >= "40" && f <= "47")||f >= "100" && f <= "107") {
                 _this.item["bg_color"] = _this.color[f]
             } else if (f === "1") {
                 _this.item["bold"] = true
             }
 
-            if (g >= "30" && g <= "37") {
+            if ((g >= "30" && g <= "37")||g >= "90" && g <= "97") {
                 _this.item["color"] = _this.color[g]
-            } else if (g >= "40" && g <= "47") {
+            } else if ((g >= "40" && g <= "47")||g >= "100" && g <= "107") {
                 _this.item["bg_color"] = _this.color[g]
             } else if (g === "1") {
                 _this.item["bold"] = true
@@ -136,28 +155,41 @@ export default class XLog {
         }, null).addRule(/\033\[(\d+);(\d+);(\d+)m/, function (e, f, g, h) {
             _this.pushItemToLine()
 
-            if (f >= "30" && f <= "37") {
-                _this.item["color"] = _this.color[f]
-            } else if (f >= "40" && f <= "47") {
-                _this.item["bg_color"] = _this.color[f]
-            } else if (f === "1") {
-                _this.item["bold"] = true
-            }
+            // 256 color fg
+            if (f == "38" && g == "5") {
+                _this.item["color"] = "c265-"+h
+            }else
 
-            if (g >= "30" && g <= "37") {
-                _this.item["color"] = _this.color[g]
-            } else if (g >= "40" && g <= "47") {
-                _this.item["bg_color"] = _this.color[g]
-            } else if (g === "1") {
-                _this.item["bold"] = true
-            }
+            // 256 color bg
+            if (f == "48" && g == "5") {
+                _this.item["bg_color"] = "c265-"+h
+            }else {
 
-            if (h >= "30" && h <= "37") {
-                _this.item["color"] = _this.color[h]
-            } else if (h >= "40" && h <= "47") {
-                _this.item["bg_color"] = _this.color[h]
-            } else if (h === "1") {
-                _this.item["bold"] = true
+                // base color mode
+                if ((f >= "30" && f <= "37") || f >= "90" && f <= "97") {
+                    _this.item["color"] = _this.color[f]
+                } else if ((f >= "40" && f <= "47") || f >= "100" && f <= "107") {
+                    _this.item["bg_color"] = _this.color[f]
+                } else if (f === "1") {
+                    _this.item["bold"] = true
+                }
+
+                if ((g >= "30" && f <= "37") || g >= "90" && g <= "97") {
+                    _this.item["color"] = _this.color[g]
+                } else if ((g >= "40" && g <= "47") || g >= "100" && g <= "107") {
+                    _this.item["bg_color"] = _this.color[g]
+                } else if (g === "1") {
+                    _this.item["bold"] = true
+                }
+
+                if ((h >= "30" && h <= "37") || h >= "90" && h <= "97") {
+                    _this.item["color"] = _this.color[h]
+                } else if ((h >= "40" && g <= "47") || h >= "100" && h <= "107") {
+                    _this.item["bg_color"] = _this.color[h]
+                } else if (h === "1") {
+                    _this.item["bold"] = true
+                }
+
             }
 
         }, null).addRule(/\033\[0K/, function (e) {
