@@ -2,7 +2,7 @@
   "name": "xlog-ansiparser",
   "version": "1.0.1",
   "description": "A packaged to parse anis log like xterm",
-  "main": "dist/xlog-1.0.1.js",
+  "main": "dist/XLog.js",
   "auth": "duguying",
   "email": "root@duguying.net",
   "dependencies": {},
