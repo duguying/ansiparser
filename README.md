@@ -2,6 +2,12 @@
 
 this is an ansiparser named xlog, it could generate ansi colorful log in browser with DOM.
 
+## Install
+
+```shell
+npm install xlog-ansiparser --save
+```
+
 ## Usage
 
 ```html
