@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="./node_modules/jquery/dist/jquery.js"></script>
-    <script src="./dist/xlog-1.0.3.js"></script>
+    <script src="./dist/xlog-1.0.6.js"></script>
     <link rel="stylesheet" href="./xlog.css">
     <style>
         body{
@@ -23,7 +23,7 @@
     $(document).ready(function (e) {
         $.ajax({
             method: "GET",
-            url: "/ansiparser/color.txt",
+            url: "https://api.travis-ci.org/v3/job/31095019/log.txt",
             success: function (data) {
                 let segs = data.split("\n");
                 segs.forEach((v, i) => {

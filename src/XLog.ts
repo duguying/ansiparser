@@ -192,6 +192,8 @@ export default class XLog {
 
             }
 
+        }, null).addRule(/\033\[(\d+);(\d+);(\d+);(\d+)m/, function (e, f, g, h, i) {
+        }, null).addRule(/\033\[(\d+);(\d+);(\d+);(\d+);(\d+)m/, function (e, f, g, h, j) {
         }, null).addRule(/\033\[0K/, function (e) {
         }, null).addRule(/\033\[K/, function (e) {
         }, null).addRule(/[\r]?\n/, function (e) {
