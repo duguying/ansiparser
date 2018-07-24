@@ -2,3 +2,5 @@ node_modules/
 .idea/
 dist/
 src/*.js
+*.css
+*.map

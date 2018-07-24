@@ -10,10 +10,12 @@
 import Lexer from "./Lexer"
 
 export default class XLog {
+    private enableLineNumber = true;
+    private lineNumber = 1;
     private lexer = null;
     private xLogElement: HTMLElement = null;
     private lines = [];
-    private item = {"text": "", "color": "", "bg_color": "", "bold": false};
+    private item = {"text": "", "color": "", "bg_color": "", "bold": false, "is_line_number": false};
     private line = [];
     private color = {
         // color
@@ -39,16 +41,20 @@ export default class XLog {
 
     private newline() {
         if (this.line.length > 0) {
+            if (this.enableLineNumber) {
+                this.line = [{"text": this.lineNumber, "color": "", "bg_color": "", "bold": false, "is_line_number": true}].concat(this.line)
+            }
             this.lines.push(this.line)
             this.writeLine(this.line)
             this.line = []
+            this.lineNumber++
         }
     }
 
     private pushItemToLine() {
         if (this.item["text"] !== "") {
             this.line.push(this.item)
-            this.item = {"text": "", "color": "", "bg_color": "", "bold": false}
+            this.item = {"text": "", "color": "", "bg_color": "", "bold": false, "is_line_number": false}
         }
     }
 
@@ -67,19 +73,27 @@ export default class XLog {
         element.className = "line"
 
         for (let i = 0; i < line.length; i++) {
-            let span = document.createElement("span")
             let item = line[i];
-            if (item["bold"]) {
-                span.classList.add("bolder")
+            if (!item["is_line_number"]) {
+                let span = document.createElement("span")
+                if (item["bold"]) {
+                    span.classList.add("bolder")
+                }
+                if (item["color"] !== "") {
+                    span.classList.add("fg-" + item["color"])
+                }
+                if (item["bg_color"] !== "") {
+                    span.classList.add("bg-" + item["bg_color"])
+                }
+                if (item["is_line_number"]) {
+                    span.classList.add("line-number")
+                }
+                span.innerHTML = item["text"]
+                element.appendChild(span)
+            }else if (this.enableLineNumber) {
+                let a = document.createElement("a")
+                element.appendChild(a)
             }
-            if (item["color"] !== "") {
-                span.classList.add("fg-"+item["color"])
-            }
-            if (item["bg_color"] !== "") {
-                span.classList.add("bg-"+item["bg_color"])
-            }
-            span.innerHTML = item["text"]
-            element.appendChild(span)
         }
 
         this.xLogElement.appendChild(element)
