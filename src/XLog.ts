@@ -19,44 +19,44 @@ export default class XLog {
     private line = [];
     private color = {
         // color
-        "30": "black",
-        "31": "red",
-        "32": "green",
-        "33": "yellow",
-        "34": "blue",
-        "35": "purple",
-        "36": "cyan",
-        "37": "white",
+        30: "black",
+        31: "red",
+        32: "green",
+        33: "yellow",
+        34: "blue",
+        35: "purple",
+        36: "cyan",
+        37: "white",
 
         // bg color
-        "40": "black",
-        "41": "red",
-        "42": "green",
-        "43": "yellow",
-        "44": "blue",
-        "45": "purple",
-        "46": "cyan",
-        "47": "white",
+        40: "black",
+        41: "red",
+        42: "green",
+        43: "yellow",
+        44: "blue",
+        45: "purple",
+        46: "cyan",
+        47: "white",
 
         // bright color
-        "90": "bright-black",
-        "91": "bright-red",
-        "92": "bright-green",
-        "93": "bright-yellow",
-        "94": "bright-blue",
-        "95": "bright-purple",
-        "96": "bright-cyan",
-        "97": "bright-white",
+        90: "bright-black",
+        91: "bright-red",
+        92: "bright-green",
+        93: "bright-yellow",
+        94: "bright-blue",
+        95: "bright-purple",
+        96: "bright-cyan",
+        97: "bright-white",
 
         // bright bg color
-        "100": "bright-black",
-        "101": "bright-red",
-        "102": "bright-green",
-        "103": "bright-yellow",
-        "104": "bright-blue",
-        "105": "bright-purple",
-        "106": "bright-cyan",
-        "107": "bright-white",
+        100: "bright-black",
+        101: "bright-red",
+        102: "bright-green",
+        103: "bright-yellow",
+        104: "bright-blue",
+        105: "bright-purple",
+        106: "bright-cyan",
+        107: "bright-white",
     }
 
     private newline() {
@@ -122,71 +122,78 @@ export default class XLog {
     private createLexer() {
         let lexer = new Lexer(null);
         let _this = this
-        lexer.addRule(/\033\[([\d]+)m/, function (e, f) {
+        lexer.addRule(/\033\[([\d]+)m/, function (e, sf) {
+            let df = Number.parseInt(sf)
+
             _this.pushItemToLine()
 
-            if ((f >= "30" && f <= "37")||f >= "90" && f <= "97") {
-                _this.item["color"] = _this.color[f]
-            } else if ((f >= "40" && f <= "47")||f >= "100" && f <= "107") {
-                _this.item["bg_color"] = _this.color[f]
-            } else if (f === "1") {
+            if ((df >= 30 && df <= 37)||df >= 90 && df <= 97) {
+                _this.item["color"] = _this.color[df]
+            } else if ((df >= 40 && df <= 47)||df >= 100 && df <= 107) {
+                _this.item["bg_color"] = _this.color[df]
+            } else if (df === 1) {
                 _this.item["bold"] = true
             }
 
-        }, null).addRule(/\033\[(\d+);(\d+)m/, function (e, f, g) {
+        }, null).addRule(/\033\[(\d+);(\d+)m/, function (e, sf, sg) {
+            let df = Number.parseInt(sf)
+            let dg = Number.parseInt(sg)
             _this.pushItemToLine()
 
-            if ((f >= "30" && f <= "37")||f >= "90" && f <= "97") {
-                _this.item["color"] = _this.color[f]
-            } else if ((f >= "40" && f <= "47")||f >= "100" && f <= "107") {
-                _this.item["bg_color"] = _this.color[f]
-            } else if (f === "1") {
+            if ((df >= 30 && df <= 37)||df >= 90 && df <= 97) {
+                _this.item["color"] = _this.color[df]
+            } else if ((df >= 40 && df <= 47)||df >= 100 && df <= 107) {
+                _this.item["bg_color"] = _this.color[df]
+            } else if (df === 1) {
                 _this.item["bold"] = true
             }
 
-            if ((g >= "30" && g <= "37")||g >= "90" && g <= "97") {
-                _this.item["color"] = _this.color[g]
-            } else if ((g >= "40" && g <= "47")||g >= "100" && g <= "107") {
-                _this.item["bg_color"] = _this.color[g]
-            } else if (g === "1") {
+            if ((dg >= 30 && dg <= 37)||dg >= 90 && dg <= 97) {
+                _this.item["color"] = _this.color[dg]
+            } else if ((dg >= 40 && dg <= 47)||dg >= 100 && dg <= 107) {
+                _this.item["bg_color"] = _this.color[dg]
+            } else if (dg === 1) {
                 _this.item["bold"] = true
             }
 
-        }, null).addRule(/\033\[(\d+);(\d+);(\d+)m/, function (e, f, g, h) {
+        }, null).addRule(/\033\[(\d+);(\d+);(\d+)m/, function (e, sf, sg, sh) {
+            let df = Number.parseInt(sf)
+            let dg = Number.parseInt(sg)
+            let dh = Number.parseInt(sh)
             _this.pushItemToLine()
 
             // 256 color fg
-            if (f == "38" && g == "5") {
-                _this.item["color"] = "c265-"+h
+            if (df == 38 && dg == 5) {
+                _this.item["color"] = "c265-"+dh
             }else
 
             // 256 color bg
-            if (f == "48" && g == "5") {
-                _this.item["bg_color"] = "c265-"+h
+            if (df == 48 && dg == 5) {
+                _this.item["bg_color"] = "c265-"+dh
             }else {
 
                 // base color mode
-                if ((f >= "30" && f <= "37") || f >= "90" && f <= "97") {
-                    _this.item["color"] = _this.color[f]
-                } else if ((f >= "40" && f <= "47") || f >= "100" && f <= "107") {
-                    _this.item["bg_color"] = _this.color[f]
-                } else if (f === "1") {
+                if ((df >= 30 && df <= 37) || df >= 90 && df <= 97) {
+                    _this.item["color"] = _this.color[df]
+                } else if ((df >= 40 && df <= 47) || df >= 100 && df <= 107) {
+                    _this.item["bg_color"] = _this.color[df]
+                } else if (df === 1) {
                     _this.item["bold"] = true
                 }
 
-                if ((g >= "30" && f <= "37") || g >= "90" && g <= "97") {
-                    _this.item["color"] = _this.color[g]
-                } else if ((g >= "40" && g <= "47") || g >= "100" && g <= "107") {
-                    _this.item["bg_color"] = _this.color[g]
-                } else if (g === "1") {
+                if ((dg >= 30 && df <= 37) || dg >= 90 && dg <= 97) {
+                    _this.item["color"] = _this.color[dg]
+                } else if ((dg >= 40 && dg <= 47) || dg >= 100 && dg <= 107) {
+                    _this.item["bg_color"] = _this.color[dg]
+                } else if (dg === 1) {
                     _this.item["bold"] = true
                 }
 
-                if ((h >= "30" && h <= "37") || h >= "90" && h <= "97") {
-                    _this.item["color"] = _this.color[h]
-                } else if ((h >= "40" && g <= "47") || h >= "100" && h <= "107") {
-                    _this.item["bg_color"] = _this.color[h]
-                } else if (h === "1") {
+                if ((dh >= 30 && dh <= 37) || dh >= 90 && dh <= 97) {
+                    _this.item["color"] = _this.color[dh]
+                } else if ((dh >= 40 && dg <= 47) || dh >= 100 && dh <= 107) {
+                    _this.item["bg_color"] = _this.color[dh]
+                } else if (dh === 1) {
                     _this.item["bold"] = true
                 }
 
